@@ -41,6 +41,7 @@ build/
 htmlcov/
 .mypy_cache/
 .dmypy.json
+!.python-version
 
 # -----------------------------------------------------------------------------
 # MICROPYTHON (Pi Pico)
