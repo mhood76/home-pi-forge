@@ -2,7 +2,7 @@
 
 > A progressively built home lab platform — sensors, databases, APIs, dashboards, and beyond — running entirely on Raspberry Pi hardware.
 
-PiForge is a personal home lab project that grows phase by phase from a simple web server into a full-stack, multi-language, publicly accessible web platform. Each phase builds directly on the last, covering Python, JavaScript, Node.js, PostgreSQL, Java, and more — all running on real hardware you own.
+Home Pi Forge is a personal home lab project that grows phase by phase from a simple web server into a full-stack, multi-language, publicly accessible web platform. Each phase builds directly on the last, covering Python, JavaScript, Node.js, PostgreSQL, Java, and more — all running on real hardware you own.
 
 ---
 
