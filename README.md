@@ -1,4 +1,4 @@
-# 🔥 PiForge
+# 🔥 Home Pi Forge
 
 > A progressively built home lab platform — sensors, databases, APIs, dashboards, and beyond — running entirely on Raspberry Pi hardware.
 
