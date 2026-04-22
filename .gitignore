@@ -1,22 +1,187 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
-.vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-file
-*.flf
-#Test results file
-TestResults.xml
+# =============================================================================
+# PiForge .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# SECRETS & ENVIRONMENT VARIABLES — never commit these
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+secrets/
+config/local.*
+
+# -----------------------------------------------------------------------------
+# PYTHON
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+.env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dmypy.json
+
+# -----------------------------------------------------------------------------
+# MICROPYTHON (Pi Pico)
+# -----------------------------------------------------------------------------
+*.mpy
+__pycache__/
+
+# -----------------------------------------------------------------------------
+# NODE.JS / NPM / JAVASCRIPT
+# -----------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.pnp.*
+.node_repl_history
+*.tgz
+.cache/
+dist/
+build/
+
+# PM2
+.pm2/
+ecosystem.config.js.bak
+
+# -----------------------------------------------------------------------------
+# JAVA / MAVEN / SPRING BOOT
+# -----------------------------------------------------------------------------
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle (if used)
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# -----------------------------------------------------------------------------
+# POSTGRESQL
+# -----------------------------------------------------------------------------
+*.sql.bak
+pg_hba.conf
+postgresql.conf
+*.dump
+*.backup
+
+# -----------------------------------------------------------------------------
+# NGINX
+# -----------------------------------------------------------------------------
+*.pid
+nginx_error.log
+access.log
+error.log
+
+# -----------------------------------------------------------------------------
+# LOGS
+# -----------------------------------------------------------------------------
+logs/
+*.log
+log/
+*.log.*
+
+# -----------------------------------------------------------------------------
+# OS GENERATED FILES
+# -----------------------------------------------------------------------------
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Windows
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# VS CODE
+# -----------------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+*.code-workspace
+
+# -----------------------------------------------------------------------------
+# JETBRAINS IDEs (IntelliJ, etc. for Java phase)
+# -----------------------------------------------------------------------------
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# -----------------------------------------------------------------------------
+# RASPBERRY PI / SSH
+# -----------------------------------------------------------------------------
+known_hosts
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+authorized_keys
+
+# -----------------------------------------------------------------------------
+# SSL / CERTBOT (Let's Encrypt - Phase 9)
+# -----------------------------------------------------------------------------
+/etc/letsencrypt/
+certbot/
+*.pem
+
+# -----------------------------------------------------------------------------
+# MISC
+# -----------------------------------------------------------------------------
+*.bak
+*.swp
+*.swo
+*.tmp
+*.temp
+.htpasswd
