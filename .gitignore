@@ -186,3 +186,4 @@ certbot/
 *.tmp
 *.temp
 .htpasswd
+.obsidian
