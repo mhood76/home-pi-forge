@@ -198,7 +198,7 @@ def render_card(
     pw = int(draw.textlength(page, font=font_footer))
     draw.text((W - pw - 4, 111), page, font=font_footer, fill=255)
 
-    return img
+    return img.rotate(90, expand=True)
 
 # ── Main loop ─────────────────────────────────────────────────────────────────
 
@@ -210,7 +210,7 @@ def main():
     print(f"{'='*52}\n")
 
     epd         = epd_module.EPD()
-    W, H        = epd.width, epd.height
+    W, H        = epd.height, epd.width
     font_body   = _load_font(12)
     font_footer = _load_font(10)
 
