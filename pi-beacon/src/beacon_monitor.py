@@ -32,7 +32,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-SSH_USER     = "user"
+SSH_USER     = "mark"
 SSH_TIMEOUT  = 5    # seconds before an SSH connect attempt is abandoned
 DISPLAY_SECS = 5    # seconds each status card is shown before rotating
 
@@ -245,7 +245,7 @@ def main():
                     epd.init()
                     epd.display(epd.getbuffer(img))
                 else:
-                    epd.init(epd.PART_UPDATE)
+                    epd.init_part()
                     epd.displayPartial(epd.getbuffer(img))
 
                 time.sleep(DISPLAY_SECS)
