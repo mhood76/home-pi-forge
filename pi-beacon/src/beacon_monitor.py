@@ -127,8 +127,8 @@ def collect_all() -> list:
 def _load_font(size: int):
     for path in (
         "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf",
     ):
         try:
             return ImageFont.truetype(path, size)
