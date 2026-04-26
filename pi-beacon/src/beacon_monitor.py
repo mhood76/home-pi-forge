@@ -211,8 +211,8 @@ def main():
 
     epd         = epd_module.EPD()
     W, H        = epd.height, epd.width
-    font_body   = _load_font(14)
-    font_footer = _load_font(12)
+    font_body   = _load_font(16)
+    font_footer = _load_font(18)
 
     print("[INIT] Starting display (full clear)...")
     epd.init()
