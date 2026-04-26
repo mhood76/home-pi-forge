@@ -238,15 +238,18 @@ def main():
 
             for idx, metrics in enumerate(all_metrics):
                 img = render_card(metrics, idx, len(DEVICES), W, H, font_md, font_sm)
+                buf = epd.getbuffer(img)
 
-                # Full refresh at the start of each cycle clears partial-refresh
-                # ghosting. Cards 2-5 within a cycle use faster partial refresh.
+                # V4 partial-refresh pattern: init() + display() for the first card,
+                # then set it as the base image; subsequent cards call displayPartial()
+                # directly (no mode-switch needed, faster waveform, no full-panel flash).
+                # Full refresh every cycle prevents ghosting from accumulating.
                 if idx == 0:
                     epd.init()
-                    epd.display(epd.getbuffer(img))
+                    epd.display(buf)
+                    epd.displayPartBaseImage(buf)
                 else:
-                    epd.init_part()
-                    epd.displayPartial(epd.getbuffer(img))
+                    epd.displayPartial(buf)
 
                 time.sleep(DISPLAY_SECS)
 
