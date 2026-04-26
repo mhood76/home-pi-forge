@@ -1,2 +1,8 @@
+# Install system dependencies first (apt):
+# sudo apt install python3-pip python3-pil python3-numpy python3-gpiozero libopenjp2-7 -y
+
+# Then install pip packages:
 pillow
-waveshare-epd
+waveshare-epd --break-system-packages
+spidev
+setuptools
