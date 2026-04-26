@@ -53,7 +53,7 @@ _REMOTE_CMD = (
     "vmstat 1 2 | tail -1 | awk '{print 100-$15}'; "
     "vcgencmd measure_temp 2>/dev/null | sed 's/temp=//' "
         "|| awk '{printf \"%.1fC\", $1/1000}' /sys/class/thermal/thermal_zone0/temp; "
-    "free -m | awk 'NR==2{printf \"%dMB/%dMB (%.0f%%)\", $3,$2,100*$3/$2}'"
+    "free -m | awk 'NR==2{printf \"%d / %d MB\", $3,$2}'"
 )
 
 _DASHES = "---"
@@ -143,70 +143,60 @@ def render_card(
     total: int,
     W: int,
     H: int,
-    font_md,
-    font_sm,
+    font_body,
+    font_footer,
 ) -> Image.Image:
-    """Return a 1-bit Pillow Image for one device status card.
+    """Return a grayscale Pillow Image for one device status card.
+
+    The image is created in 'L' mode so that fill=128 labels dither to a
+    visually lighter gray when the Waveshare driver converts to 1-bit.
 
     Layout (250×122):
-      0–17   black header: device name left, UP/DOWN right
-      23–68  four metric rows (IP, Up, CPU+Temp, Mem)
-      101    separator line
-      101–121 footer: dot indicators left, project name right
+      y=0–20   black header: hostname left, UP/DOWN right
+      y=24     IP row
+      y=40     Uptime row
+      y=55     divider line
+      y=59     CPU + Temp row (two columns)
+      y=75     Mem row
+      y=108–121 black footer: PiForge left, n/total right
     """
-    img  = Image.new("1", (W, H), 255)
+    img  = Image.new("L", (W, H), 255)
     draw = ImageDraw.Draw(img)
 
-    # ── Header bar ────────────────────────────────────────────────────────
-    HDR = 18
-    draw.rectangle([(0, 0), (W - 1, HDR - 1)], fill=0)
-    draw.text((4, 2), metrics["name"], font=font_md, fill=255)
-
+    # ── Header (y=0–20) ───────────────────────────────────────────────────
+    draw.rectangle([(0, 0), (W - 1, 20)], fill=0)
+    draw.text((4, 3), metrics["name"], font=font_body, fill=255)
     status = "UP" if metrics["up"] else "DOWN"
-    sw = int(draw.textlength(status, font=font_md))
-    draw.text((W - sw - 4, 2), status, font=font_md, fill=255)
+    sw = int(draw.textlength(status, font=font_body))
+    draw.text((W - sw - 4, 3), status, font=font_body, fill=255)
 
-    # ── Metric rows ───────────────────────────────────────────────────────
-    LX  = 4    # label column x
-    VX  = 46   # value column x
-    LX2 = 132  # second-label column x (for CPU+Temp row)
-    VX2 = 172  # second-value column x
-    y   = HDR + 5
+    # ── Row 1: IP (y=24) ──────────────────────────────────────────────────
+    draw.text((4,  24), "IP",          font=font_body, fill=128)
+    draw.text((42, 24), metrics["ip"], font=font_body, fill=0)
 
-    def metric_row(label, value, label2=None, value2=None):
-        nonlocal y
-        draw.text((LX, y), label, font=font_sm, fill=0)
-        draw.text((VX, y), value, font=font_sm, fill=0)
-        if label2 is not None:
-            draw.text((LX2, y), label2, font=font_sm, fill=0)
-            draw.text((VX2, y), value2, font=font_sm, fill=0)
-        y += 15
+    # ── Row 2: Uptime (y=40) ──────────────────────────────────────────────
+    draw.text((4,  40), "Uptime",          font=font_body, fill=128)
+    draw.text((42, 40), metrics["uptime"], font=font_body, fill=0)
 
-    metric_row("IP",  metrics["ip"])
-    metric_row("Up",  metrics["uptime"])
-    metric_row("CPU", metrics["cpu"], "Temp", metrics["temp"])
-    metric_row("Mem", metrics["mem"])
+    # ── Divider (y=55) ────────────────────────────────────────────────────
+    draw.line([(0, 55), (W - 1, 55)], fill=0, width=1)
 
-    # ── Footer ────────────────────────────────────────────────────────────
-    SEP_Y  = H - 21    # 101 — separator line
-    DOT_CY = H - 9     # 113 — dot vertical centre
-    DOT_R  = 3
-    TEXT_Y = DOT_CY - 7  # 106 — top of footer text, vertically centred with dots
+    # ── Row 3: CPU + Temp (y=59) ──────────────────────────────────────────
+    draw.text((4,   59), "CPU",          font=font_body, fill=128)
+    draw.text((42,  59), metrics["cpu"], font=font_body, fill=0)
+    draw.text((110, 59), "Temp",         font=font_body, fill=128)
+    draw.text((148, 59), metrics["temp"], font=font_body, fill=0)
 
-    draw.line([(0, SEP_Y), (W - 1, SEP_Y)], fill=0, width=1)
+    # ── Row 4: Mem (y=75) ─────────────────────────────────────────────────
+    draw.text((4,  75), "Mem",          font=font_body, fill=128)
+    draw.text((42, 75), metrics["mem"], font=font_body, fill=0)
 
-    # Filled dot = current device; outline dot = other devices
-    for i in range(total):
-        cx = 6 + i * (DOT_R * 2 + 5)
-        bb = [(cx - DOT_R, DOT_CY - DOT_R), (cx + DOT_R, DOT_CY + DOT_R)]
-        if i == index:
-            draw.ellipse(bb, fill=0)
-        else:
-            draw.ellipse(bb, outline=0)
-
-    label = "home-pi-forge"
-    lw = int(draw.textlength(label, font=font_sm))
-    draw.text((W - lw - 4, TEXT_Y), label, font=font_sm, fill=0)
+    # ── Footer (y=108–121) ────────────────────────────────────────────────
+    draw.rectangle([(0, 108), (W - 1, H - 1)], fill=0)
+    draw.text((4, 111), "PiForge", font=font_footer, fill=255)
+    page = f"{index + 1} / {total}"
+    pw = int(draw.textlength(page, font=font_footer))
+    draw.text((W - pw - 4, 111), page, font=font_footer, fill=255)
 
     return img
 
@@ -219,10 +209,10 @@ def main():
     print(f"  Rotation: every {DISPLAY_SECS}s")
     print(f"{'='*52}\n")
 
-    epd     = epd_module.EPD()
-    W, H    = epd.width, epd.height
-    font_md = _load_font(14)
-    font_sm = _load_font(11)
+    epd         = epd_module.EPD()
+    W, H        = epd.width, epd.height
+    font_body   = _load_font(12)
+    font_footer = _load_font(10)
 
     print("[INIT] Starting display (full clear)...")
     epd.init()
@@ -237,7 +227,7 @@ def main():
                 print(f"  {'UP  ' if m['up'] else 'DOWN'}  {m['name']}")
 
             for idx, metrics in enumerate(all_metrics):
-                img = render_card(metrics, idx, len(DEVICES), W, H, font_md, font_sm)
+                img = render_card(metrics, idx, len(DEVICES), W, H, font_body, font_footer)
                 buf = epd.getbuffer(img)
 
                 # V4 partial-refresh pattern: init() + display() for the first card,
